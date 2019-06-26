@@ -14,5 +14,6 @@ namespace RentalManager.Models
         public string Email { get; set; }
         public string Address { get; set; }
         public bool isArchived { get; set; }
+        public string ApplicationUserId { get; set; }
     }
 }

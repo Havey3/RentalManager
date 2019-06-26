@@ -11,5 +11,6 @@ namespace RentalManager.Models
         public string Name { get; set; }
         public string Location { get; set; }
         public bool isArchived { get; set; }
+        public string ApplicationUserId { get; set; }
     }
 }
