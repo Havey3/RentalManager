@@ -26,7 +26,6 @@ namespace RentalManager.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    AdminId = table.Column<int>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Location = table.Column<string>(nullable: true),
                     isAvailable = table.Column<bool>(nullable: false),
@@ -49,7 +48,6 @@ namespace RentalManager.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    AdminId = table.Column<int>(nullable: false),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
                     Email = table.Column<string>(nullable: true),
