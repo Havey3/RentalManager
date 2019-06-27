@@ -27,16 +27,21 @@ namespace RentalManager.Controllers
 
         // GET: Users
         public async Task<IActionResult> Index(string searchQuery)
+            //Added a string paramater 'searchQuery'
         {
             ApplicationUser user = await GetCurrentUserAsync();
             List<User> userList = await _context.User
+                //Getting the users attatched to the admin
                 .Where(u => u.ApplicationUserId == user.Id)
+                //Displaying the users who are not archived
                 .Where(u => u.isArchived == false)
                 //|| u.isArchived == false
                 .ToListAsync();
 
+            //Checking to see if the admin is using the search bar
             if (searchQuery != null)
             {
+                //checking to see if searchQuery = user.Firstname and or LastName
                 userList = userList.Where(u => u.FirstName.Contains(searchQuery) || u.LastName.Contains(searchQuery)).ToList();
             }
             return View(userList);
@@ -92,7 +97,7 @@ namespace RentalManager.Controllers
                 return NotFound();
             }
 
-            var user = await _context.User.FindAsync(id);
+            User user = await _context.User.FindAsync(id);
             if (user == null)
             {
                 return NotFound();
@@ -105,7 +110,7 @@ namespace RentalManager.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Email,Address,isArchived")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Email,Address")] User user)
         {
             if (id != user.Id)
             {
@@ -130,6 +135,10 @@ namespace RentalManager.Controllers
                         throw;
                     }
                 }
+                //Sets the User.ApplicationUserId = applicationUserId
+                ApplicationUser appUser = await GetCurrentUserAsync();
+                user.ApplicationUserId = appUser.Id;
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(user);
@@ -154,11 +163,13 @@ namespace RentalManager.Controllers
         }
 
         // POST: Users/Delete/5
+        //Soft Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var user = await _context.User.FindAsync(id);
+            //Updating isArchived = true if the Admin deletes a user
             user.isArchived = true;
             _context.User.Update(user);
             await _context.SaveChangesAsync();
