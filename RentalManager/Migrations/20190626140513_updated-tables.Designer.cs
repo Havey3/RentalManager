@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RentalManager.Data;
 
 namespace RentalManager.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190626140513_updated-tables")]
+    partial class updatedtables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -198,21 +200,15 @@ namespace RentalManager.Data.Migrations
 
                     b.Property<string>("ApplicationUserId");
 
-                    b.Property<string>("Location")
-                        .IsRequired();
+                    b.Property<string>("Location");
 
-                    b.Property<string>("Name")
-                        .IsRequired();
+                    b.Property<string>("Name");
 
-                    b.Property<int?>("UserRentalsId");
-
-                    b.Property<bool>("isArchived");
+                    b.Property<bool>("isAvailable");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationUserId");
-
-                    b.HasIndex("UserRentalsId");
 
                     b.ToTable("Rentals");
                 });
@@ -223,21 +219,15 @@ namespace RentalManager.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Address")
-                        .IsRequired();
+                    b.Property<string>("Address");
 
                     b.Property<string>("ApplicationUserId");
 
-                    b.Property<string>("Email")
-                        .IsRequired();
+                    b.Property<string>("Email");
 
-                    b.Property<string>("FirstName")
-                        .IsRequired();
+                    b.Property<string>("FirstName");
 
-                    b.Property<string>("LastName")
-                        .IsRequired();
-
-                    b.Property<bool>("isArchived");
+                    b.Property<string>("LastName");
 
                     b.HasKey("Id");
 
@@ -265,9 +255,6 @@ namespace RentalManager.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationUserId");
-
-                    b.HasIndex("userId")
-                        .IsUnique();
 
                     b.ToTable("UserRentals");
                 });
@@ -322,10 +309,6 @@ namespace RentalManager.Data.Migrations
                     b.HasOne("RentalManager.Models.ApplicationUser")
                         .WithMany("Rentals")
                         .HasForeignKey("ApplicationUserId");
-
-                    b.HasOne("RentalManager.Models.UserRentals", "UserRentals")
-                        .WithMany()
-                        .HasForeignKey("UserRentalsId");
                 });
 
             modelBuilder.Entity("RentalManager.Models.User", b =>
@@ -340,11 +323,6 @@ namespace RentalManager.Data.Migrations
                     b.HasOne("RentalManager.Models.ApplicationUser")
                         .WithMany("UserRentals")
                         .HasForeignKey("ApplicationUserId");
-
-                    b.HasOne("RentalManager.Models.User")
-                        .WithOne("UserRentals")
-                        .HasForeignKey("RentalManager.Models.UserRentals", "userId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }
