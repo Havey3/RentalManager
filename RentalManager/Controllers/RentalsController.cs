@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RentalManager.Data;
 using RentalManager.Models;
+using RentalManager.Models.ViewModel;
 
 namespace RentalManager.Controllers
 {
@@ -142,6 +143,51 @@ namespace RentalManager.Controllers
             return View(rentals);
         }
 
+
+        // POST: Rentals/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Book(int id, RentalVM vm)
+        //{
+        //    var rental = vm.Rentals;
+        //    if (id != rental.Id)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            _context.Update(rental);
+        //            await _context.SaveChangesAsync();
+        //        }
+        //        catch (DbUpdateConcurrencyException)
+        //        {
+        //            if (!RentalsExists(rental.Id))
+        //            {
+        //                return NotFound();
+        //            }
+        //            else
+        //            {
+        //                throw;
+        //            }
+        //        }
+        //        return RedirectToAction(nameof(Index));
+        //    }
+
+        //    var users = await _context.User.ToListAsync();
+        //    vm.UserOptions = users.Select(u => new SelectListItem
+        //    {
+        //        Value = u.Id.ToString(),
+        //        Text = u.FirstName
+        //    }).ToList();
+
+        //    return View(vm);
+        //}
+
         // GET: Rentals/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -160,6 +206,54 @@ namespace RentalManager.Controllers
             return View(rentals);
         }
 
+        //GET Rentals/Book
+        public async Task<IActionResult> Book(int id)
+        {
+
+            ApplicationUser appUser = await GetCurrentUserAsync();
+            List<User> users = await _context.User.ToListAsync();
+            Rentals rentals = await _context.Rentals.FirstOrDefaultAsync(r => r.Id == id);
+
+            RentalVM vm = new RentalVM()
+            {
+                //Get Rentals to display Name, Location for View
+                Rentals = await _context.Rentals.FirstOrDefaultAsync(r => r.Id == id),
+                UserOptions = users.Where(u => u.ApplicationUserId == appUser.Id).Select(u => new SelectListItem
+                {
+                    Value = u.Id.ToString(),
+                    Text = u.FirstName,
+                })
+                .ToList()
+            };
+            return View(vm);
+        }
+
+
+        // POST: Rentals/Book/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Book(int id, RentalVM vm)
+        {
+            //Check to see if Rental.Id == UserRentalId?
+
+            var Users = await _context.Users.ToListAsync();
+            //User users = await _context.User.FirstOrDefaultAsync(u => u.Id == id);
+
+            UserRentals userRentals = new UserRentals()
+            {
+                rentalId = id,
+                userId = vm.userRentals.userId
+            };
+            _context.Add(userRentals);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+         }
+  
+
+
+
+
         // POST: Rentals/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -177,4 +271,6 @@ namespace RentalManager.Controllers
             return _context.Rentals.Any(e => e.Id == id);
         }
     }
+
+
 }

@@ -1,0 +1,49 @@
+﻿@model RentalManager.Models.ViewModel.RentalVM
+
+@{
+    ViewData["Title"] = "Book";
+}
+
+<h1>Book</h1>
+
+<h4>Rentals</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <div>
+            <h4>Rentals</h4>
+            <hr />
+            <dl class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Rentals.Name)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Rentals.Name)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Rentals.Location)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Rentals.Location)
+                </dd>
+            </dl>
+        </div>
+        <form asp-action="Book">
+            <div class="form-group">
+                <label asp-for="userRentals.userId" class="control-label"></label>
+                <select asp-for="userRentals.userId" class="form-control" asp-items="@Model.UserOptions"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Book" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

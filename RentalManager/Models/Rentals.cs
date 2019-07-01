@@ -17,5 +17,6 @@ namespace RentalManager.Models
         public bool isArchived { get; set; }
         public string ApplicationUserId { get; set; }
         public UserRentals UserRentals { get; set; }
+        public User User { get; set; }
     }
 }
