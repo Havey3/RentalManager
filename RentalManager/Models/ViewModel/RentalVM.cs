@@ -12,5 +12,6 @@ namespace RentalManager.Models.ViewModel
         public Rentals Rentals { get; set; }
         public UserRentals userRentals { get; set; }
         public List<SelectListItem> UserOptions { get; set; }
+    
     }
 }

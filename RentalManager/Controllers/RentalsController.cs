@@ -144,49 +144,6 @@ namespace RentalManager.Controllers
         }
 
 
-        // POST: Rentals/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Book(int id, RentalVM vm)
-        //{
-        //    var rental = vm.Rentals;
-        //    if (id != rental.Id)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(rental);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!RentalsExists(rental.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-
-        //    var users = await _context.User.ToListAsync();
-        //    vm.UserOptions = users.Select(u => new SelectListItem
-        //    {
-        //        Value = u.Id.ToString(),
-        //        Text = u.FirstName
-        //    }).ToList();
-
-        //    return View(vm);
-        //}
 
         // GET: Rentals/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -218,10 +175,10 @@ namespace RentalManager.Controllers
             {
                 //Get Rentals to display Name, Location for View
                 Rentals = await _context.Rentals.FirstOrDefaultAsync(r => r.Id == id),
-                UserOptions = users.Where(u => u.ApplicationUserId == appUser.Id).Select(u => new SelectListItem
+                UserOptions = users.Where(u => u.ApplicationUserId == appUser.Id && u.isArchived == false).Select(u => new SelectListItem
                 {
                     Value = u.Id.ToString(),
-                    Text = u.FirstName,
+                    Text = u.FirstName
                 })
                 .ToList()
             };
@@ -238,17 +195,27 @@ namespace RentalManager.Controllers
 
             var Users = await _context.Users.ToListAsync();
             //User users = await _context.User.FirstOrDefaultAsync(u => u.Id == id);
+            string errormessage = "End Date must be before Start Date";
 
             UserRentals userRentals = new UserRentals()
             {
                 rentalId = id,
-                userId = vm.userRentals.userId
+                userId = vm.userRentals.userId,
+                startDate = vm.userRentals.startDate.Date,
+                endDate = vm.userRentals.endDate.Date
             };
-            _context.Add(userRentals);
-            await _context.SaveChangesAsync();
+            if (userRentals.startDate.Date < userRentals.endDate.Date){
+                _context.Add(userRentals);
+                await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
-         }
+                return RedirectToAction(nameof(Index));
+            }
+            else{
+                return NotFound(errormessage);
+                
+            }
+            //return RedirectToAction(nameof(Index));
+        }
   
 
 
