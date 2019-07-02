@@ -10,6 +10,7 @@ namespace RentalManager.Models.ViewModel
     public class RentalVM
     {
         public Rentals Rentals { get; set; }
+        public User User { get; set; }
         public UserRentals userRentals { get; set; }
         public List<SelectListItem> UserOptions { get; set; }
     

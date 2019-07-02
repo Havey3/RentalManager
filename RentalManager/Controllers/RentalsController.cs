@@ -26,7 +26,7 @@ namespace RentalManager.Controllers
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
         // GET: Rentals
-        public async Task<IActionResult> Index(string searchQuery)
+        public async Task<IActionResult> Index(string searchQuery, string filterQuery)
         {
             ApplicationUser user = await GetCurrentUserAsync();
             List<Rentals> rentals = await _context.Rentals
@@ -37,12 +37,21 @@ namespace RentalManager.Controllers
                 //|| u.isArchived == false
                 .ToListAsync();
 
+            var attempt = _context.Rentals.Include(r => r.UserRentals).Where(r => r.ApplicationUserId == user.Id).Where(r => r.isArchived == false);
 
             //Checking to see if the admin is using the search bar
             if (searchQuery != null)
             {
                 //checking to see if searchQuery = user.Firstname and or LastName
                 rentals = rentals.Where(r => r.Name.Contains(searchQuery) || r.Location.Contains(searchQuery)).ToList();
+            }
+            if (filterQuery == "1")
+            {
+                rentals = attempt.Where(r => r.UserRentals.All(ur => ur.endDate <= DateTime.Now) || r.UserRentals.Count == 0).ToList();
+            }
+            else if (filterQuery == "2")
+            {
+                rentals = attempt.Where(r => r.UserRentals.Any(ur => ur.endDate >= DateTime.Now) ||r.UserRentals.Count > 0).ToList();
             }
             return View(rentals);
         }

@@ -11,6 +11,9 @@ namespace RentalManager.Models
         public int Id { get; set; }
         public int userId { get; set; }
         public int rentalId { get; set; }
+        public User User { get; set; }
+        public Rentals Rental { get; set; }
+
         [DataType(DataType.Date)]
         [Display (Name ="Start Date")]
         public DateTime startDate { get; set; }
