@@ -16,6 +16,7 @@ namespace RentalManager.Models
         public string Location { get; set; }
         public bool isArchived { get; set; }
         public string ApplicationUserId { get; set; }
+        [Display(Name = "Current User")]
         public List<UserRentals> UserRentals { get; set; }
     }
 }

@@ -26,7 +26,7 @@ namespace RentalManager.Controllers
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
         // GET: Rentals
-        public async Task<IActionResult> Index(string searchQuery, string filterQuery)
+        public async Task<IActionResult> Index(string searchQuery, string filterQuery, int? id)
         {
             ApplicationUser user = await GetCurrentUserAsync();
             List<Rentals> rentals = await _context.Rentals
@@ -45,13 +45,15 @@ namespace RentalManager.Controllers
                 //checking to see if searchQuery = user.Firstname and or LastName
                 rentals = rentals.Where(r => r.Name.Contains(searchQuery) || r.Location.Contains(searchQuery)).ToList();
             }
+            //Shows available rentals
             if (filterQuery == "1")
             {
                 rentals = attempt.Where(r => r.UserRentals.All(ur => ur.endDate <= DateTime.Now) || r.UserRentals.Count == 0).ToList();
             }
+            //Shows rented out rentals
             else if (filterQuery == "2")
             {
-                rentals = attempt.Where(r => r.UserRentals.Any(ur => ur.endDate >= DateTime.Now) ||r.UserRentals.Count > 0).ToList();
+                rentals = attempt.Where(r => r.UserRentals.Any(ur => ur.endDate > DateTime.Now) && r.UserRentals.Count > 0).ToList();
             }
             return View(rentals);
         }
@@ -63,8 +65,9 @@ namespace RentalManager.Controllers
             {
                 return NotFound();
             }
-
             var rentals = await _context.Rentals
+                .Include(r => r.UserRentals)
+                    .ThenInclude(ur => ur.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (rentals == null)
             {
@@ -191,6 +194,12 @@ namespace RentalManager.Controllers
                 })
                 .ToList()
             };
+            vm.UserOptions.Insert(0, new SelectListItem
+            {
+                Text = "Choose a User",
+                Value = "0"
+            });
+            
             return View(vm);
         }
 
@@ -213,7 +222,7 @@ namespace RentalManager.Controllers
                 startDate = vm.userRentals.startDate.Date,
                 endDate = vm.userRentals.endDate.Date
             };
-            if (userRentals.startDate.Date < userRentals.endDate.Date){
+            if (userRentals.startDate.Date < userRentals.endDate.Date && userRentals.startDate.Date > DateTime.Now){
                 _context.Add(userRentals);
                 await _context.SaveChangesAsync();
 
@@ -221,8 +230,8 @@ namespace RentalManager.Controllers
             }
             else{
                 return NotFound(errormessage);
-                
             }
+
             //return RedirectToAction(nameof(Index));
         }
   

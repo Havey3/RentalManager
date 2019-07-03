@@ -21,4 +21,14 @@ namespace RentalManager.Models
         [Display(Name = "End Date")]
         public DateTime endDate { get; set; }
     }
+
+    //public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    //{
+    //    if (LocalDelivery && string.IsNullOrEmpty(City))
+    //    {
+    //        yield return new ValidationResult(
+    //            $"You must select a city for delivery."
+    //         );
+    //    }
+    //}
 }

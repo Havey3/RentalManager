@@ -22,6 +22,6 @@ namespace RentalManager.Models
         public string Address { get; set; }
         public bool isArchived { get; set; }
         public string ApplicationUserId { get; set; }
-        public UserRentals UserRentals { get; set; }
+        public List<UserRentals> UserRentals { get; set; }
     }
 }
