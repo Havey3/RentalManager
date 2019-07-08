@@ -35,6 +35,7 @@ namespace RentalManager.Controllers
                 //Displaying the users who are not archived
                 .Where(r => r.isArchived == false)
                 //|| u.isArchived == false
+                .Include(r => r.UserRentals)
                 .ToListAsync();
 
             var attempt = _context.Rentals.Include(r => r.UserRentals).Where(r => r.ApplicationUserId == user.Id).Where(r => r.isArchived == false);
