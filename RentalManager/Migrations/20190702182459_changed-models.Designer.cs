@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RentalManager.Data;
 
 namespace RentalManager.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190702182459_changed-models")]
+    partial class changedmodels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -264,7 +266,8 @@ namespace RentalManager.Data.Migrations
 
                     b.HasIndex("rentalId");
 
-                    b.HasIndex("userId");
+                    b.HasIndex("userId")
+                        .IsUnique();
 
                     b.ToTable("UserRentals");
                 });
@@ -340,8 +343,8 @@ namespace RentalManager.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("RentalManager.Models.User", "User")
-                        .WithMany("UserRentals")
-                        .HasForeignKey("userId")
+                        .WithOne("UserRentals")
+                        .HasForeignKey("RentalManager.Models.UserRentals", "userId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

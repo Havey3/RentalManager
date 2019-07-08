@@ -1,0 +1,55 @@
+﻿@model RentalManager.Models.Rentals
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Rentals</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Location)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Location)
+        </dd>
+        <dt class="col-sm-10">
+            @Html.DisplayNameFor(model => model.UserRentals)
+        </dt>
+        <dd class="col-sm-10">
+            @*Shows current users*@
+            @foreach (var userRentals in Model.UserRentals)
+            {
+                if (userRentals.userId == userRentals.User.Id && userRentals.endDate > DateTime.Now)
+                {
+                <div>
+                    @Html.DisplayFor(Model => userRentals.User.FirstName)
+                    @Html.DisplayFor(Model => userRentals.User.LastName)
+                </div>
+                }
+            }
+            @*Going to come back to this, display what user is renting out the property*@
+            @*        @if (Model.userRentals.rentalId == Model.Rentals.Id)
+            {
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(userRentals => userRentals.User.FirstName)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(userRentals => userRentals.User.FirstName)
+                </dd>
+            }*@
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
