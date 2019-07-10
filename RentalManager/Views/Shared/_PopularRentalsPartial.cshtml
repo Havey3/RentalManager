@@ -1,0 +1,21 @@
+﻿@model  List<RentalManager.Models.ViewModel.Report.PopularRentals>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">
+                    @Html.DisplayNameFor(model => model[0].rentalStats)
+                </th>
+                <th scope="col">
+                    @Html.DisplayNameFor(model => model[0].numberOfRents)
+                </th>
+            </tr>
+        </thead>
+        @foreach (var item in @Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(model => item.rentalStats.Name)</td>
+                <td>@Html.DisplayFor(model => item.numberOfRents)</td>
+            </tr>
+        }
+    </table>
+

@@ -1,0 +1,14 @@
+﻿@model RentalManager.Models.ViewModel.Stats
+@{
+    ViewData["Title"] = "Stats";
+}
+
+<h1>Stats</h1>
+<div>
+    <h5>@Html.DisplayNameFor(model => model.topRentals)</h5>
+    @if (@Model.topRentals.Count() > 0)
+    {
+        @await Html.PartialAsync("_PopularRentalsPartial", @Model.topRentals)
+    }
+</div>
+
