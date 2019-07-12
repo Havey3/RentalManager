@@ -27,7 +27,7 @@ namespace RentalManager.Controllers
 
         // GET: Users
         public async Task<IActionResult> Index(string searchQuery)
-            //Added a string paramater 'searchQuery'
+        //Added a string paramater 'searchQuery'
         {
             ApplicationUser user = await GetCurrentUserAsync();
             List<User> userList = await _context.User

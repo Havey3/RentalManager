@@ -54,3 +54,33 @@ body {
   height: 60px;
   line-height: 60px; /* Vertically center the text there */
 }
+
+#filterQuery {
+    display: flex !important;
+    justify-content: center !important;
+    width: 10rem;
+    height: 2rem;
+    margin-right: 2%;
+  
+}
+.filter {
+    display: flex;
+    justify-content: center;
+    height: 2rem;
+}
+.attempt {
+    display: flex;
+    /*justify-content: space-between;*/
+    align-items: center;
+}
+.search-from {
+    padding-right: 1%;
+}
+.filter-button {
+    width: 4rem;
+}
+
+#navbar {
+    background-color: mintcream !important;
+    border-color: lightgrey !important;
+}

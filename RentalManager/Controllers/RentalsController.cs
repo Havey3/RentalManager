@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using RentalManager.Data;
 using RentalManager.Models;
 using RentalManager.Models.ViewModel;
+using RentalManager.Models.ViewModel.Report;
 
 namespace RentalManager.Controllers
 {
@@ -36,6 +37,7 @@ namespace RentalManager.Controllers
                 .Where(r => r.isArchived == false)
                 //|| u.isArchived == false
                 .Include(r => r.UserRentals)
+                //.OrderBy(ur => ur.UserRental)
                 .ToListAsync();
 
             var attempt = _context.Rentals.Include(r => r.UserRentals).Where(r => r.ApplicationUserId == user.Id).Where(r => r.isArchived == false);
@@ -235,9 +237,6 @@ namespace RentalManager.Controllers
 
             //return RedirectToAction(nameof(Index));
         }
-  
-
-
 
 
         // POST: Rentals/Delete/5
@@ -256,7 +255,34 @@ namespace RentalManager.Controllers
         {
             return _context.Rentals.Any(e => e.Id == id);
         }
+
+        //Stats GET
+        [HttpGet]
+        public async Task<IActionResult> Stats()
+        {
+            ApplicationUser user = await GetCurrentUserAsync();
+            Stats statsVm = new Stats();
+
+            List<UserRentals> userRentals = await _context.UserRentals
+                .Include(ur => ur.User)
+                .Include(ur => ur.Rental).ToListAsync();
+            // .Include(ur => ur.endDate)
+            //.Include(ur => ur.startDate)
+
+            List<UserRentals> rentedProperties = userRentals.Where(ur => ur.Rental.Id == ur.rentalId && ur.Rental.ApplicationUserId == user.Id).Where(ur => ur.Rental.isArchived == false
+            ).ToList();
+
+            statsVm.topRentals = (from ur in rentedProperties
+                                  group ur by ur.rentalId into gr
+                                  orderby gr.Count() descending
+                                  select new PopularRentals()
+                                  {
+                                      rentalStats = gr.ToList()[0].Rental,
+                                      numberOfRents = gr.ToList().Count()
+                                  }).ToList();
+
+            return View(statsVm);
+        }
     }
-
-
 }
+
