@@ -37,6 +37,7 @@ namespace RentalManager.Controllers
                 .Where(r => r.isArchived == false)
                 //|| u.isArchived == false
                 .Include(r => r.UserRentals)
+                //.OrderBy(ur => ur.UserRental)
                 .ToListAsync();
 
             var attempt = _context.Rentals.Include(r => r.UserRentals).Where(r => r.ApplicationUserId == user.Id).Where(r => r.isArchived == false);
@@ -259,6 +260,7 @@ namespace RentalManager.Controllers
         [HttpGet]
         public async Task<IActionResult> Stats()
         {
+            ApplicationUser user = await GetCurrentUserAsync();
             Stats statsVm = new Stats();
 
             List<UserRentals> userRentals = await _context.UserRentals
@@ -267,7 +269,8 @@ namespace RentalManager.Controllers
             // .Include(ur => ur.endDate)
             //.Include(ur => ur.startDate)
 
-            List<UserRentals> rentedProperties = userRentals.Where(ur => ur.Rental.Id == ur.rentalId).ToList();
+            List<UserRentals> rentedProperties = userRentals.Where(ur => ur.Rental.Id == ur.rentalId && ur.Rental.ApplicationUserId == user.Id).Where(ur => ur.Rental.isArchived == false
+            ).ToList();
 
             statsVm.topRentals = (from ur in rentedProperties
                                   group ur by ur.rentalId into gr
